@@ -3,11 +3,9 @@
 int main()
 {
     linked_list* mylist = NULL;
-    list_init(&mylist); // create an empty head node
 
-    // set head value
     int val = 10;
-    list_set_value(mylist, &val, sizeof(int));
+    list_init(&mylist, &val, sizeof(int)); // create head node
 
     // add a few other nodes at the end of the list
     val = 20;

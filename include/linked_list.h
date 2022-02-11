@@ -11,11 +11,9 @@ typedef struct node
     struct node* next;
 } linked_list;
 
-void list_init(linked_list** list);
+void list_init(linked_list** list, void* value, size_t size);
 
 void list_free(linked_list** list);
-
-void list_set_value(linked_list* list, void* value, size_t size);
 
 void list_add_node(linked_list* list, void* value, size_t size);
 

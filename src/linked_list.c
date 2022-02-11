@@ -1,9 +1,10 @@
 #include "../include/linked_list.h"
 
-void list_init(linked_list** list)
+void list_init(linked_list** list, void* value, size_t size)
 {
     *list = malloc(sizeof(linked_list));
-    (*list)->value = NULL;
+    (*list)->value = malloc(size);
+    memcpy((*list)->value, value, size);
     (*list)->next = NULL;
 }
 
