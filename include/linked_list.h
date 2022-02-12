@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct node
 {
@@ -17,6 +18,10 @@ void list_init(linked_list** list, void* value, size_t size);
 void list_free(linked_list** list);
 
 void list_add_node(linked_list* list, void* value, size_t size);
+
+void list_remove_by_key(linked_list** list, const char* key);
+
+void list_remove_by_value(linked_list** list, void* value, bool (*cmp)(void*, void*));
 
 void list_set_key(linked_list* list, const char* key);
 
