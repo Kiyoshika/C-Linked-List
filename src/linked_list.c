@@ -30,45 +30,8 @@ void list_add_node(linked_list* list, void* value, size_t size)
     list->next = new_node;
 }
 
-// internal function
-void list_recursive_check_key(linked_list** list, const char* key)
+void list_remove_by_key(linked_list** list, const char* key)
 {
-    if ((*list)->next != NULL &&
-        (*list)->next->key != NULL &&
-        strncmp((*list)->next->key, key, strlen((*list)->next->key)) == 0)
-    {
-        linked_list* tmp = (*list)->next;
-        (*list)->next = (*list)->next->next;
-        if (tmp->key != NULL)
-            free((void*)tmp->key);
-        free(tmp->value);
-        free(tmp);
-    }
-
-    if ((*list)->next == NULL) return;
-    else
-        list_recursive_check_key(&(*list)->next, key);
-}
-
-// internal function
-void list_recursive_check_value(linked_list** list, void* value, bool (*cmp)(void*, void*))
-{
-    if ((*list)->next != NULL && cmp((*list)->next->value, value))
-    {
-        linked_list* tmp = (*list)->next;
-        (*list)->next = (*list)->next->next;
-        if (tmp->key != NULL)
-            free((void*)tmp->key);
-        free(tmp->value);
-        free(tmp);
-    }
-
-    if ((*list)->next == NULL) return;
-    else
-        list_recursive_check_value(&(*list)->next, value, cmp);
-}
-
-void list_remove_by_key(linked_list** list, const char* key) {
 
     // removing head node is a special case
     if (strncmp((*list)->key, key, strlen((*list)->key)) == 0)
@@ -81,12 +44,36 @@ void list_remove_by_key(linked_list** list, const char* key) {
         free(previous_node->value);
         free(previous_node);
     }
-        // doing this iteratively is difficult since I'm dealing with addresses, thus I will do it recursively
     else
-        list_recursive_check_key(list, key);
+    {
+        linked_list* temp = *list;
+        while (temp != NULL)
+        {
+            if (temp->next != NULL &&
+            temp->next->key != NULL &&
+            strncmp(temp->next->key, key, strlen(temp->next->key)) == 0)
+            {
+                linked_list* previous_node = temp;
+                temp = temp->next;
+                previous_node->next = temp->next;
+                break;
+            }
+            temp = temp->next;
+        }
+
+        // free memory allocated pointed to by the temp pointer
+        if (temp != NULL)
+        {
+            if (temp->key != NULL)
+                free((void*)temp->key);
+            free(temp->value);
+            free(temp);
+        }
+    }
 }
 
-void list_remove_by_value(linked_list** list, void* value, bool (*cmp)(void*, void*)) {
+void list_remove_by_value(linked_list** list, void* value, bool (*cmp)(void*, void*))
+{
 
     // removing head node is a special case
     if (cmp((*list)->value, value))
@@ -99,9 +86,30 @@ void list_remove_by_value(linked_list** list, void* value, bool (*cmp)(void*, vo
         free(previous_node->value);
         free(previous_node);
     }
-    // doing this iteratively is difficult since I'm dealing with addresses, thus I will do it recursively
     else
-        list_recursive_check_value(list, value, cmp);
+    {
+        linked_list* temp = *list;
+        while (temp != NULL)
+        {
+            if (temp->next != NULL && cmp(temp->next->value, value))
+            {
+                linked_list* previous_node = temp;
+                temp = temp->next;
+                previous_node->next = temp->next;
+                break;
+            }
+            temp = temp->next;
+        }
+
+        // free memory allocated pointed to by the temp pointer
+        if (temp != NULL)
+        {
+            if (temp->key != NULL)
+                free((void*)temp->key);
+            free(temp->value);
+            free(temp);
+        }
+    }
 }
 
 void list_set_key(linked_list* list, const char* key)
